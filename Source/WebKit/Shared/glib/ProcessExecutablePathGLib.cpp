@@ -32,7 +32,8 @@
 
 namespace WebKit {
 
-#if ENABLE(DEVELOPER_MODE)
+// Testplane use "WEBKIT_EXEC_PATH" env variable
+#if ENABLE(DEVELOPER_MODE) || true
 static String getExecutablePath()
 {
     CString executablePath = FileSystem::currentExecutablePath();
@@ -44,7 +45,8 @@ static String getExecutablePath()
 
 static String findWebKitProcess(const char* processName)
 {
-#if ENABLE(DEVELOPER_MODE)
+// Testplane use "WEBKIT_EXEC_PATH" env variable
+#if ENABLE(DEVELOPER_MODE) || true
     static const char* execDirectory = g_getenv("WEBKIT_EXEC_PATH");
     if (execDirectory) {
         String processPath = FileSystem::pathByAppendingComponent(FileSystem::stringFromFileSystemRepresentation(execDirectory), StringView::fromLatin1(processName));

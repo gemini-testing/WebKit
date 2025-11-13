@@ -70,7 +70,8 @@ static gboolean windowMaximized;
 static gboolean windowFullscreen;
 #if ENABLE_WPE_PLATFORM
 static gboolean useLegacyAPI;
-static const char* defaultWindowTitle = "WPEWebKit MiniBrowser";
+// Testplane rename window
+static const char* defaultWindowTitle = "Testplane WebKitWPE";
 static const char* configFile;
 #endif
 
@@ -254,16 +255,16 @@ static gboolean wpeViewEventCallback(WPEView* view, WPEEvent* event, WebKitWebVi
 
 static void webViewTitleChanged(WebKitWebView* webView, GParamSpec*, WPEView* view)
 {
+    // Testplane begin rename window
     const char* title = webkit_web_view_get_title(webView);
+    char* privateTitle = nullptr;
     if (!title)
         title = defaultWindowTitle;
-    char* privateTitle = nullptr;
-    if (webkit_web_view_is_controlled_by_automation(webView))
-        privateTitle = g_strdup_printf("[Automation] %s", title);
-    else if (webkit_network_session_is_ephemeral(webkit_web_view_get_network_session(webView)))
-        privateTitle = g_strdup_printf("[Private] %s", title);
+    else
+        privateTitle = g_strdup_printf("Testplane WebKitWPE: %s", title);
     wpe_toplevel_set_title(wpe_view_get_toplevel(view), privateTitle ? privateTitle : title);
     g_free(privateTitle);
+    // Testplane end
 }
 #endif
 

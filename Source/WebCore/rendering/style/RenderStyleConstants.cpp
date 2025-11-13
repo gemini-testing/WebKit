@@ -407,6 +407,11 @@ TextStream& operator<<(TextStream& ts, ContentVisibility contentVisibility)
 
 TextStream& operator<<(TextStream& ts, CursorType cursor)
 {
+    // Testplane begin hide cursor
+    ts << "none"_s;
+    return ts;
+    // Testplane end
+
     switch (cursor) {
     case CursorType::Auto: ts << "auto"_s; break;
     case CursorType::Default: ts << "default"_s; break;

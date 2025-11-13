@@ -177,6 +177,20 @@ private:
 
     void setWindowFrame(WebPageProxy&, const WebCore::FloatRect& frame) final
     {
+
+// Testplane begin (enable https://w3c.github.io/webdriver/#set-window-rect)
+#if PLATFORM(WPE) && ENABLE(WPE_PLATFORM)
+        auto wpeView = webkit_web_view_get_wpe_view(m_webView);
+        wpe_view_resized(wpeView, frame.width(), frame.height());
+        auto timer = makeUnique<RunLoop::Timer>(RunLoop::mainSingleton(), "setWindowFrame timer"_s, this, &UIClient::setWindowFrameTimerFired);
+        timer->setPriority(RunLoopSourcePriority::RunLoopTimer);
+        timer->startOneShot(200_ms);
+        RunLoop::run();
+        timer = nullptr;
+        return;
+#endif // PLATFORM(WPE)
+// Testplane end
+
 #if PLATFORM(GTK)
         GdkRectangle geometry = WebCore::IntRect(frame);
         GtkWidget* window = gtk_widget_get_toplevel(GTK_WIDGET(m_webView));
