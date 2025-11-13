@@ -1309,6 +1309,8 @@ String WebKeyboardEvent::singleCharacterStringForWPEKeyval(unsigned keyval)
     case WPE_KEY_ISO_Enter:
     case WPE_KEY_KP_Enter:
     case WPE_KEY_Return:
+    case WPE_KEY_MAGIC_ASCII_Newline:
+    case WPE_KEY_MAGIC_ASCII_Carriage_Return:
         return String("\r"_s);
     case WPE_KEY_BackSpace:
         return String("\x8"_s);

@@ -635,7 +635,9 @@ static gboolean webkitWebViewDecidePolicy(WebKitWebView*, WebKitPolicyDecision* 
 
 static gboolean webkitWebViewPermissionRequest(WebKitWebView*, WebKitPermissionRequest* request)
 {
-#if ENABLE(POINTER_LOCK)
+// Testplane begin deny pointer lock request for WPE
+#if ENABLE(POINTER_LOCK) && PLATFORM(GTK)
+// Testplane end
     if (WEBKIT_IS_POINTER_LOCK_PERMISSION_REQUEST(request)) {
         webkit_permission_request_allow(request);
         return TRUE;

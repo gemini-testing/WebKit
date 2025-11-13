@@ -890,7 +890,8 @@ RefPtr<JSON::Object> WebDriverService::matchCapabilities(const JSON::Object& mer
     for (auto it = mergedCapabilities.begin(); it != end; ++it) {
         if (it->key == "browserName"_s && platformCapabilities.browserName) {
             auto browserName = it->value->asString();
-            if (!equalIgnoringASCIICase(platformCapabilities.browserName.value(), browserName))
+            // Testplane accept "webkitwpe" and "webkit" as browserName
+            if (!equalIgnoringASCIICase(browserName, "webkitwpe"_s) && !equalIgnoringASCIICase(browserName, "webkit"_s) && !equalIgnoringASCIICase(browserName, platformCapabilities.browserName.value()))
                 return nullptr;
         } else if (it->key == "browserVersion"_s && platformCapabilities.browserVersion) {
             auto browserVersion = it->value->asString();
@@ -1957,7 +1958,7 @@ void WebDriverService::elementSendKeys(RefPtr<JSON::Object>&& parameters, Functi
 
     auto text = parameters->getString("text"_s);
     if (text.isEmpty()) {
-        completionHandler(CommandResult::fail(CommandResult::ErrorCode::InvalidArgument, "Missing text parameter"_s));
+        m_session->elementClear(elementID.value(), WTFMove(completionHandler));
         return;
     }
 

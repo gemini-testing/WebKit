@@ -240,8 +240,17 @@ void SessionHost::setupConnection(Ref<SocketConnection>&& connection)
 
 static bool matchBrowserOptions(const String& browserName, const String& browserVersion, const Capabilities& capabilities)
 {
-    if (capabilities.browserName && capabilities.browserName.value() != browserName)
-        return false;
+    // Testplane accept "WebKitWPE" and "WebKit" as browserName
+    if (capabilities.browserName) {
+        auto requestedBrowserName = capabilities.browserName.value();
+
+        if (
+            requestedBrowserName != browserName &&
+            requestedBrowserName != "WebKitWPE"_s &&
+            requestedBrowserName != "WebKit"_s
+        )
+            return false;
+    }
 
     if (capabilities.browserVersion && !WebDriverService::platformCompareBrowserVersions(capabilities.browserVersion.value(), browserVersion))
         return false;

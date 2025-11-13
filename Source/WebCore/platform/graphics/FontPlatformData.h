@@ -142,7 +142,7 @@ struct FontPlatformDataAttributes {
 
     FontOrientation m_orientation { FontOrientation::Horizontal };
     FontWidthVariant m_widthVariant { FontWidthVariant::RegularWidth };
-    TextRenderingMode m_textRenderingMode { TextRenderingMode::AutoTextRendering };
+    TextRenderingMode m_textRenderingMode { TextRenderingMode::OptimizeSpeed };
 
     bool m_syntheticBold { false };
     bool m_syntheticOblique { false };
@@ -292,10 +292,10 @@ public:
     FontPlatformData(WTF::HashTableDeletedValueType);
     FontPlatformData();
 
-    FontPlatformData(float size, bool syntheticBold, bool syntheticOblique, FontOrientation = FontOrientation::Horizontal, FontWidthVariant = FontWidthVariant::RegularWidth, TextRenderingMode = TextRenderingMode::AutoTextRendering, const FontCustomPlatformData* = nullptr);
+    FontPlatformData(float size, bool syntheticBold, bool syntheticOblique, FontOrientation = FontOrientation::Horizontal, FontWidthVariant = FontWidthVariant::RegularWidth, TextRenderingMode = TextRenderingMode::OptimizeSpeed, const FontCustomPlatformData* = nullptr);
 
 #if USE(CORE_TEXT)
-    WEBCORE_EXPORT FontPlatformData(RetainPtr<CTFontRef>&&, float size, bool syntheticBold = false, bool syntheticOblique = false, FontOrientation = FontOrientation::Horizontal, FontWidthVariant = FontWidthVariant::RegularWidth, TextRenderingMode = TextRenderingMode::AutoTextRendering, const FontCustomPlatformData* = nullptr);
+    WEBCORE_EXPORT FontPlatformData(RetainPtr<CTFontRef>&&, float size, bool syntheticBold = false, bool syntheticOblique = false, FontOrientation = FontOrientation::Horizontal, FontWidthVariant = FontWidthVariant::RegularWidth, TextRenderingMode = TextRenderingMode::OptimizeSpeed, const FontCustomPlatformData* = nullptr);
 #endif
 
 #if PLATFORM(WIN) && USE(CAIRO)
@@ -481,7 +481,7 @@ private:
 
     FontOrientation m_orientation { FontOrientation::Horizontal };
     FontWidthVariant m_widthVariant { FontWidthVariant::RegularWidth };
-    TextRenderingMode m_textRenderingMode { TextRenderingMode::AutoTextRendering };
+    TextRenderingMode m_textRenderingMode { TextRenderingMode::OptimizeSpeed };
 
     // This is conceptually const, but we can't make it actually const,
     // because FontPlatformData is used as a key in a HashMap.

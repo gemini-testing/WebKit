@@ -1462,6 +1462,39 @@ void WebAutomationSession::computeElementLayout(const Inspector::Protocol::Autom
     page->sendWithAsyncReplyToProcessContainingFrameWithoutDestinationIdentifier(frameID, Messages::WebAutomationSessionProxy::ComputeElementLayout(page->webPageIDInMainFrameProcess(), frameID, nodeHandle, scrollIntoViewIfNeeded, coordinateSystem.value()), WTFMove(completionHandler));
 }
 
+void WebAutomationSession::computeElementRect(const Inspector::Protocol::Automation::BrowsingContextHandle& browsingContextHandle, const Inspector::Protocol::Automation::FrameHandle& frameHandle, const Inspector::Protocol::Automation::NodeHandle& nodeHandle, CommandCallback<Ref<Protocol::Automation::Rect>>&& callback)
+{
+    auto page = webPageProxyForHandle(browsingContextHandle);
+    ASYNC_FAIL_WITH_PREDEFINED_ERROR_IF(!page, WindowNotFound);
+
+    bool frameNotFound = false;
+    auto frameID = webFrameIDForHandle(frameHandle, frameNotFound);
+    ASYNC_FAIL_WITH_PREDEFINED_ERROR_IF(frameNotFound, FrameNotFound);
+
+    WTF::CompletionHandler<void(std::optional<String>&&, WebCore::FloatRect&&)> completionHandler = [callback = WTFMove(callback)](std::optional<String> optionalError, WebCore::FloatRect rect) mutable {
+        ASYNC_FAIL_WITH_PREDEFINED_ERROR_IF_SET(optionalError);
+
+        auto originObject = Inspector::Protocol::Automation::Point::create()
+            .setX(rect.x())
+            .setY(rect.y())
+            .release();
+
+        auto sizeObject = Inspector::Protocol::Automation::Size::create()
+            .setWidth(rect.width())
+            .setHeight(rect.height())
+            .release();
+
+        auto rectObject = Inspector::Protocol::Automation::Rect::create()
+            .setOrigin(WTFMove(originObject))
+            .setSize(WTFMove(sizeObject))
+            .release();
+
+        callback(WTFMove(rectObject));
+    };
+
+    page->sendWithAsyncReplyToProcessContainingFrameWithoutDestinationIdentifier(frameID, Messages::WebAutomationSessionProxy::ComputeElementRect(page->webPageIDInMainFrameProcess(), frameID, nodeHandle), WTFMove(completionHandler));
+}
+
 void WebAutomationSession::getComputedRole(const Inspector::Protocol::Automation::BrowsingContextHandle& browsingContextHandle, const Inspector::Protocol::Automation::FrameHandle& frameHandle, const Inspector::Protocol::Automation::NodeHandle& nodeHandle, CommandCallback<String>&& callback)
 {
     auto page = webPageProxyForHandle(browsingContextHandle);

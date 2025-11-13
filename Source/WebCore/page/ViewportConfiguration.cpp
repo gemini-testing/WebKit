@@ -120,7 +120,8 @@ static bool needsUpdateAfterChangingDisabledAdaptations(const OptionSet<Disabled
 // Those are the original iPhone configuration.
 ViewportConfiguration::ViewportConfiguration()
     : m_defaultConfiguration(ViewportConfiguration::webpageParameters())
-    , m_minimumLayoutSize(1024, 768)
+    // Testplane allow extra small layout
+    , m_minimumLayoutSize(300, 300)
     , m_viewLayoutSize(1024, 768)
     , m_canIgnoreScalingConstraints(false)
     , m_forceAlwaysUserScalable(false)
