@@ -107,6 +107,9 @@ func (p *ProxyServer) handleSingleRequest(proxyReq *ProxyRequest) {
 	req := proxyReq.req
 	w := proxyReq.respWriter
 
+	// Log received request
+	log.Printf("Received request: %s %s", req.Method, req.URL.Path)
+
 	// Read the request body once and create a copy for the backend request
 	var bodyBytes []byte
 	var err error
@@ -118,6 +121,15 @@ func (p *ProxyServer) handleSingleRequest(proxyReq *ProxyRequest) {
 			return
 		}
 		req.Body.Close()
+
+		// Log request body
+		if len(bodyBytes) > 0 {
+			bodyStr := string(bodyBytes)
+			if len(bodyStr) > 1000 {
+				bodyStr = bodyStr[:1000] + "..."
+			}
+			log.Printf("Data: %s", bodyStr)
+		}
 	}
 
 	// Create new request to backend with copied body
@@ -171,6 +183,22 @@ func (p *ProxyServer) handleSingleRequest(proxyReq *ProxyRequest) {
 	// Log received response from backend
 	log.Printf("Received response: %s %s - %d", req.Method, req.URL.Path, resp.StatusCode)
 
+	// Read response body for logging and forwarding
+	respBodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("Error reading response body: %v", err)
+		http.Error(w, "Error reading response body", http.StatusInternalServerError)
+		return
+	}
+	resp.Body.Close()
+
+	// Log response body
+	respBodyStr := string(respBodyBytes)
+	if len(respBodyStr) > 1000 {
+		respBodyStr = respBodyStr[:1000] + "..."
+	}
+	log.Printf("Data: %s", respBodyStr)
+
 	// Copy response headers (skip hop-by-hop headers)
 	for name, values := range resp.Header {
 		if name == "Connection" || name == "Proxy-Connection" ||
@@ -185,18 +213,15 @@ func (p *ProxyServer) handleSingleRequest(proxyReq *ProxyRequest) {
 	// Set response status code
 	w.WriteHeader(resp.StatusCode)
 
-	// Copy response body
-	_, err = io.Copy(w, resp.Body)
+	// Write response body from bytes
+	_, err = w.Write(respBodyBytes)
 	if err != nil {
-		log.Printf("Error copying response body: %v", err)
+		log.Printf("Error writing response body: %v", err)
 	}
 }
 
 // ServeHTTP implements the http.Handler interface
 func (p *ProxyServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// Log received request
-	log.Printf("Received request: %s %s", r.Method, r.URL.Path)
-
 	// Create a proxy request
 	proxyReq := &ProxyRequest{
 		req:        r,
