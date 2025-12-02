@@ -102,6 +102,20 @@ func (p *ProxyServer) processRequests() {
 	}
 }
 
+// getTruncatedString returns truncated string from string buffer
+func getTruncatedString(stringBuffer []byte) string {
+	const maxLen = 1000
+
+	stringBufferLength := len(stringBuffer)
+
+	if stringBufferLength > maxLen {
+		// Convert only the first maxLen bytes
+		return string(stringBuffer[:maxLen]) + "..."
+	}
+
+	return string(stringBuffer)
+}
+
 // handleSingleRequest processes a single request to the backend
 func (p *ProxyServer) handleSingleRequest(proxyReq *ProxyRequest) {
 	req := proxyReq.req
@@ -124,11 +138,7 @@ func (p *ProxyServer) handleSingleRequest(proxyReq *ProxyRequest) {
 
 		// Log request body
 		if len(bodyBytes) > 0 {
-			bodyStr := string(bodyBytes)
-			if len(bodyStr) > 1000 {
-				bodyStr = bodyStr[:1000] + "..."
-			}
-			log.Printf("Data: %s", bodyStr)
+			log.Printf("Data: %s", getTruncatedString(bodyBytes))
 		}
 	}
 
@@ -193,11 +203,9 @@ func (p *ProxyServer) handleSingleRequest(proxyReq *ProxyRequest) {
 	resp.Body.Close()
 
 	// Log response body
-	respBodyStr := string(respBodyBytes)
-	if len(respBodyStr) > 1000 {
-		respBodyStr = respBodyStr[:1000] + "..."
+	if len(respBodyBytes) > 0 {
+		log.Printf("Data: %s",  getTruncatedString(respBodyBytes))
 	}
-	log.Printf("Data: %s", respBodyStr)
 
 	// Copy response headers (skip hop-by-hop headers)
 	for name, values := range resp.Header {
