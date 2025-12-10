@@ -226,19 +226,19 @@ static void doKeyStrokeEvent(WebPageProxy &page, bool pressed, uint32_t keyVal, 
 
     GUniqueOutPtr<WPEKeymapEntry> entries;
     guint entriesCount;
+    unsigned keyCode = 0;
     if (!wpe_keymap_get_entries_for_keyval(keymap, keyVal, &entries.outPtr(), &entriesCount)) {
         LOG(Automation, "WebAutomationSession::doKeyStrokeEvent: Failed to get keymap entries for keyval %u. Ignoring event.", keyVal);
-        return;
+    } else {
+        keyCode = entries.get()[0].keycode;
     }
-    unsigned keyCode = entries.get()[0].keycode;
 
     WPEModifiers consumedModifiers;
-    if (!wpe_keymap_translate_keyboard_state(keymap, keyCode, static_cast<WPEModifiers>(modifiers), entries.get()[0].group, &keyVal, nullptr, nullptr, &consumedModifiers)) {
+    if (!keyCode || !wpe_keymap_translate_keyboard_state(keymap, keyCode, static_cast<WPEModifiers>(modifiers), entries.get()[0].group, &keyVal, nullptr, nullptr, &consumedModifiers)) {
         LOG(Automation, "WebAutomationSession::doKeyStrokeEvent: Failed to translate keyboard state for keycode %u. Ignoring event.", keyCode);
-        return;
     }
 
-    auto remainingModifiers = static_cast<WPEModifiers>(modifiers & ~consumedModifiers);
+    auto remainingModifiers = static_cast<WPEModifiers>(!keyCode ? modifiers : (modifiers & ~consumedModifiers));
 
     GRefPtr<WPEEvent> event = adoptGRef(wpe_event_keyboard_new(pressed ? WPE_EVENT_KEYBOARD_KEY_DOWN : WPE_EVENT_KEYBOARD_KEY_UP, view, WPE_INPUT_SOURCE_KEYBOARD, 0,
     remainingModifiers, keyCode, keyVal));
