@@ -45,6 +45,7 @@
 #include <JavaScriptCore/OpaqueJSString.h>
 #include <WebCore/AXObjectCache.h>
 #include <WebCore/AccessibilityObject.h>
+#include <WebCore/CheckVisibilityOptions.h>
 #include <WebCore/ContainerNodeInlines.h>
 #include <WebCore/Cookie.h>
 #include <WebCore/CookieJar.h>
@@ -806,9 +807,17 @@ void WebAutomationSessionProxy::computeElementLayout(WebCore::PageIdentifier pag
         // at the calculated IVCP. An element is technically not "in view" if it is not within its own paint/hit test tree,
         // so it cannot have an in-view center point either. And without an IVCP, the definition of 'obscured' makes no sense.
         // See <https://w3c.github.io/webdriver/webdriver-spec.html#dfn-in-view>.
-        String elementNotInteractableErrorType = Inspector::Protocol::AutomationHelpers::getEnumConstantValue(Inspector::Protocol::Automation::ErrorMessage::ElementNotInteractable);
-        completionHandler(elementNotInteractableErrorType, resultElementBounds, resultInViewCenterPoint, isObscured);
-        return;
+
+        // Testplane // in some cases, "index == notFound" even when element is displayed, so we add intrusive visibility check
+        // Testplane // https://bugs.webkit.org/show_bug.cgi?id=303991
+
+        if (index == notFound || coreElement->checkVisibility({true, true, true})) {
+            fprintf(stderr, "Testplane::Webkit::WebAutomationSessionProxy::computeElementLayout: Skip visibility check for %s\n", nodeHandle.utf8().data());
+        } else {
+            String elementNotInteractableErrorType = Inspector::Protocol::AutomationHelpers::getEnumConstantValue(Inspector::Protocol::Automation::ErrorMessage::ElementNotInteractable);
+            completionHandler(elementNotInteractableErrorType, resultElementBounds, resultInViewCenterPoint, isObscured);
+            return;
+        }
     }
 
     // Check the case where a non-descendant element hit tests before the target element. For example, a child <option>
