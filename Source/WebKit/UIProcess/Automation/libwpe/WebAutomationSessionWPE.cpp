@@ -46,6 +46,34 @@
 
 namespace WebKit {
 
+bool isShiftNeededForKeyVal(unsigned keyVal) {
+    if (keyVal < 33 || keyVal > 126) {
+        return false;
+    }
+
+    if (keyVal < 44) {
+        return keyVal != 39;
+    }
+
+    if (keyVal < 58) {
+        return false;
+    }
+
+    if (keyVal < 65) {
+        return keyVal != 59 && keyVal != 61;
+    }
+
+    if (keyVal < 91) {
+        return true;
+    }
+
+    if (keyVal < 123) {
+        return keyVal == 94 || keyVal == 95;
+    }
+
+    return true;
+}
+
 #if ENABLE(WEBDRIVER) && (ENABLE(WEBDRIVER_MOUSE_INTERACTIONS) || ENABLE(WEBDRIVER_TOUCH_INTERACTIONS) || ENABLE(WEBDRIVER_WHEEL_INTERACTIONS))
 static WebCore::IntPoint deviceScaleLocationInView(WebPageProxy& page, const WebCore::IntPoint& locationInView)
 {
@@ -234,7 +262,9 @@ static void doKeyStrokeEvent(WebPageProxy &page, bool pressed, uint32_t keyVal, 
     }
 
     WPEModifiers consumedModifiers;
-    if (!keyCode || !wpe_keymap_translate_keyboard_state(keymap, keyCode, static_cast<WPEModifiers>(modifiers), entries.get()[0].group, &keyVal, nullptr, nullptr, &consumedModifiers)) {
+    if (isShiftNeededForKeyVal(keyVal)) {
+        modifiers |= WPE_MODIFIER_KEYBOARD_SHIFT;
+    } else if (!keyCode || !wpe_keymap_translate_keyboard_state(keymap, keyCode, static_cast<WPEModifiers>(modifiers), entries.get()[0].group, &keyVal, nullptr, nullptr, &consumedModifiers)) {
         LOG(Automation, "WebAutomationSession::doKeyStrokeEvent: Failed to translate keyboard state for keycode %u. Ignoring event.", keyCode);
     }
 
