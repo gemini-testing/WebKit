@@ -37,7 +37,7 @@
 namespace WebCore {
 
 FontPlatformData::FontPlatformData(GDIObject<HFONT> font, float size, bool bold, bool oblique, const FontCustomPlatformData* customPlatformData)
-    : FontPlatformData(size, bold, oblique, FontOrientation::Horizontal, FontWidthVariant::RegularWidth, TextRenderingMode::AutoTextRendering, customPlatformData)
+    : FontPlatformData(size, bold, oblique, FontOrientation::Horizontal, FontWidthVariant::RegularWidth, TextRenderingMode::OptimizeSpeed, customPlatformData)
 {
     m_hfont = SharedGDIObject<HFONT>::create(WTFMove(font));
     platformDataInit(m_hfont->get(), size);

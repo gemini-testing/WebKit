@@ -431,7 +431,7 @@ inline Style::FontStyle RenderStyle::initialFontStyle() { return CSS::Keyword::N
 inline Style::FontWeight RenderStyle::initialFontWeight() { return CSS::Keyword::Normal { }; }
 inline Style::FontWidth RenderStyle::initialFontWidth() { return CSS::Keyword::Normal { }; }
 constexpr Kerning RenderStyle::initialFontKerning() { return Kerning::Auto; }
-constexpr FontSmoothingMode RenderStyle::initialFontSmoothing() { return FontSmoothingMode::AutoSmoothing; }
+constexpr FontSmoothingMode RenderStyle::initialFontSmoothing() { return FontSmoothingMode::Antialiased; }
 constexpr FontSynthesisLonghandValue RenderStyle::initialFontSynthesisSmallCaps() { return FontSynthesisLonghandValue::Auto; }
 constexpr FontSynthesisLonghandValue RenderStyle::initialFontSynthesisStyle() { return FontSynthesisLonghandValue::Auto; }
 constexpr FontSynthesisLonghandValue RenderStyle::initialFontSynthesisWeight() { return FontSynthesisLonghandValue::Auto; }
@@ -444,7 +444,7 @@ constexpr Style::FontVariantNumeric RenderStyle::initialFontVariantNumeric() { r
 constexpr FontVariantPosition RenderStyle::initialFontVariantPosition() { return FontVariantPosition::Normal; }
 inline AtomString RenderStyle::initialLocale() { return nullAtom(); }
 constexpr Style::TextAutospace RenderStyle::initialTextAutospace() { return CSS::Keyword::NoAutospace { }; }
-constexpr TextRenderingMode RenderStyle::initialTextRendering() { return TextRenderingMode::AutoTextRendering; }
+constexpr TextRenderingMode RenderStyle::initialTextRendering() { return TextRenderingMode::OptimizeSpeed; }
 constexpr Style::TextSpacingTrim RenderStyle::initialTextSpacingTrim() { return CSS::Keyword::SpaceAll { }; }
 inline Style::GridTrackSizes RenderStyle::initialGridAutoColumns() { return CSS::Keyword::Auto { }; }
 constexpr Style::GridAutoFlow RenderStyle::initialGridAutoFlow() { return CSS::Keyword::Row { }; }

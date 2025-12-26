@@ -117,7 +117,7 @@ static void setCairoFontOptionsFromFontConfigPattern(cairo_font_options_t* optio
 }
 
 FontPlatformData::FontPlatformData(cairo_font_face_t* fontFace, RefPtr<FcPattern>&& pattern, float size, bool fixedWidth, bool syntheticBold, bool syntheticOblique, FontOrientation orientation, const FontCustomPlatformData* customPlatformData)
-    : FontPlatformData(size, syntheticBold, syntheticOblique, orientation, FontWidthVariant::RegularWidth, TextRenderingMode::AutoTextRendering, customPlatformData)
+    : FontPlatformData(size, syntheticBold, syntheticOblique, orientation, FontWidthVariant::RegularWidth, TextRenderingMode::OptimizeSpeed, customPlatformData)
 {
     m_pattern = WTFMove(pattern);
     m_fixedWidth = fixedWidth;
