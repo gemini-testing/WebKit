@@ -1746,7 +1746,7 @@ template<> constexpr FontSmoothingMode fromCSSValueID(CSSValueID valueID)
         break;
     }
     ASSERT_NOT_REACHED_UNDER_CONSTEXPR_CONTEXT();
-    return FontSmoothingMode::AutoSmoothing;
+    return FontSmoothingMode::Antialiased;
 }
 
 constexpr CSSValueID toCSSValueID(TextRenderingMode e)
