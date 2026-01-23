@@ -254,20 +254,8 @@ void TextureMapper::beginPainting(FlipY flipY, BitmapTexture* surface)
     #ifdef GL_DITHER
         glDisable(GL_DITHER);
     #endif
-    #ifdef GL_SAMPLE_ALPHA_TO_COVERAGE
-        glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-    #endif
-    #ifdef GL_SAMPLE_COVERAGE
-        glDisable(GL_SAMPLE_COVERAGE);
-    #endif
     #ifdef GL_MULTISAMPLE
         glDisable(GL_MULTISAMPLE);
-    #endif
-    #ifdef GL_MULTISAMPLE_EXT
-        glDisable(GL_MULTISAMPLE_EXT);
-    #endif
-    #ifdef GL_FRAMEBUFFER_SRGB
-        glDisable(GL_FRAMEBUFFER_SRGB);
     #endif
     // Testplane make rendering more consistant
 
