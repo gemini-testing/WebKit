@@ -249,16 +249,6 @@ void TextureMapper::beginPainting(FlipY flipY, BitmapTexture* surface)
     glGetIntegerv(GL_CURRENT_PROGRAM, &data().previousProgram);
     data().previousScissorState = glIsEnabled(GL_SCISSOR_TEST);
     data().previousDepthState = glIsEnabled(GL_DEPTH_TEST);
-
-    // Testplane make rendering more consistant
-    #ifdef GL_DITHER
-        glDisable(GL_DITHER);
-    #endif
-    #ifdef GL_MULTISAMPLE
-        glDisable(GL_MULTISAMPLE);
-    #endif
-    // Testplane make rendering more consistant
-
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_SCISSOR_TEST);
     data().didModifyStencil = false;
