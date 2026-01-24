@@ -182,6 +182,20 @@ static inline bool isNewIntelDevice()
 }
 #endif
 
+static bool shouldAllowMSAAOnNewIntel()
+{
+#if USE(LIBDRM)
+    static std::once_flag onceFlag;
+    static bool allowMSAAOnNewIntel;
+    std::call_once(onceFlag, [] {
+        allowMSAAOnNewIntel = isNewIntelDevice();
+    });
+    return allowMSAAOnNewIntel;
+#else
+    return false;
+#endif
+}
+
 static unsigned initializeMSAASampleCount(GrDirectContext* grContext)
 {
     static std::once_flag onceFlag;
@@ -249,8 +263,7 @@ private:
 
         // FIXME: add GrContextOptions, shader cache, etc.
         GrContextOptions options;
-        options.fAllowMSAAOnNewIntel = false; // Testplane make rendering more consistant
-        options.fInternalMultisampleCount = 0; // Testplane make rendering more consistant
+        options.fAllowMSAAOnNewIntel = shouldAllowMSAAOnNewIntel();
         if (auto grContext = GrDirectContexts::MakeGL(skiaGLInterface(), options)) {
             m_skiaGLContext = WTFMove(glContext);
             m_skiaGrContext = WTFMove(grContext);
