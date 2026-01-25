@@ -93,8 +93,6 @@ bool GLContext::getEGLConfig(EGLDisplay display, EGLConfig* config, int surfaceT
         EGL_STENCIL_SIZE, 8,
         EGL_SURFACE_TYPE, surfaceType,
         EGL_DEPTH_SIZE, 0,
-        EGL_SAMPLE_BUFFERS, 0, // Testplane make rendering more consistant
-        EGL_SAMPLES, 0, // Testplane make rendering more consistant
         EGL_NONE
     };
     WTF_ALLOW_UNSAFE_BUFFER_USAGE_END
