@@ -505,7 +505,7 @@ void DrawGlyphsRecorder::drawNativeText(CTFontRef font, CGFloat fontSize, CTLine
     m_owner.translate(lineRect.origin.x, lineRect.origin.y + lineRect.size.height);
     m_owner.scale(FloatSize(1, -1));
 
-    prepareInternalContext(Font::create(FontPlatformData(font, fontSize)), FontSmoothingMode::SubpixelAntialiased);
+    prepareInternalContext(Font::create(FontPlatformData(font, fontSize)), FontSmoothingMode::Antialiased);
     RetainPtr context = m_internalContext->platformContext();
     CGContextSetTextPosition(context.get(), 0, 0);
     CTLineDraw(line, context.get());

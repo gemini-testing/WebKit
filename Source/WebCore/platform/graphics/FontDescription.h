@@ -169,7 +169,7 @@ private:
     PREFERRED_TYPE(FontOrientation) unsigned m_orientation : 1; // Whether the font is rendering on a horizontal line or a vertical line.
     PREFERRED_TYPE(NonCJKGlyphOrientation) unsigned m_nonCJKGlyphOrientation : 1; // Only used by vertical text. Determines the default orientation for non-ideograph glyphs.
     PREFERRED_TYPE(FontWidthVariant) unsigned m_widthVariant : 2;
-    PREFERRED_TYPE(TextRenderingMode) unsigned m_textRendering : 2;
+    PREFERRED_TYPE(TextRenderingMode) unsigned m_textRendering : 1;
     unsigned m_script : 7; // UScriptCode - Used to help choose an appropriate font for generic font families.
     PREFERRED_TYPE(FontSynthesisLonghandValue) unsigned m_fontSynthesisWeight : 1;
     PREFERRED_TYPE(FontSynthesisLonghandValue) unsigned m_fontSynthesisStyle : 1;

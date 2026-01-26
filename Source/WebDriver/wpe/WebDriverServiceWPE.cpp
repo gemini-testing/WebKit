@@ -107,9 +107,26 @@ bool WebDriverService::platformMatchCapability(const String&, const Ref<JSON::Va
 void WebDriverService::platformParseCapabilities(const JSON::Object& matchedCapabilities, Capabilities& capabilities) const
 {
     capabilities.browserBinary = String("MiniBrowser"_s);
+// Testplane begin
+#if ENABLE(ALWAYS_HEADLESS) // Run headless automatically
+    capabilities.browserArguments = Vector<String> { "--automation"_s, "--headless"_s };
+#else
     capabilities.browserArguments = Vector<String> { "--automation"_s };
+#endif
 
     auto browserOptions = matchedCapabilities.getObject("wpe:browserOptions"_s);
+
+    // Testplane accept "webkitwpe:browserOptions" vendor caps
+    if (!browserOptions) {
+        browserOptions = matchedCapabilities.getObject("webkitwpe:browserOptions"_s);
+    }
+
+    // Testplane accept "webkit:browserOptions" vendor caps
+    if (!browserOptions) {
+        browserOptions = matchedCapabilities.getObject("webkit:browserOptions"_s);
+    }
+
+// Testplane end
     if (!browserOptions)
         return;
 

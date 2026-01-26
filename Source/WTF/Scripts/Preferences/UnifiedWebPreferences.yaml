@@ -159,13 +159,13 @@ AccentColorEnabled:
   humanReadableDescription: "Enable accent-color CSS property"
   defaultValue:
     WebKitLegacy:
-      "PLATFORM(COCOA)" : true
+      "PLATFORM(COCOA) || PLATFORM(WPE)" : true
       default: false
     WebKit:
-      "PLATFORM(COCOA) || USE(THEME_ADWAITA)": true
+      "PLATFORM(COCOA) || USE(THEME_ADWAITA) || PLATFORM(WPE)": true
       default: false
     WebCore:
-      "PLATFORM(COCOA) || USE(THEME_ADWAITA)": true
+      "PLATFORM(COCOA) || USE(THEME_ADWAITA) || PLATFORM(WPE)": true
       default: false
 
 AccessHandleEnabled:
@@ -452,10 +452,10 @@ AltitudeAngleEnabled:
     WebKitLegacy:
      default: false
     WebKit:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || PLATFORM(WPE)": true
       default: false
     WebCore:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || PLATFORM(WPE)": true
       default: false
 
 AlwaysAllowLocalWebarchive:
@@ -752,10 +752,10 @@ AzimuthAngleEnabled:
     WebKitLegacy:
      default: false
     WebKit:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || PLATFORM(WPE)": true
       default: false
     WebCore:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || PLATFORM(WPE)": true
       default: false
 
 BackgroundFetchAPIEnabled:
@@ -1182,7 +1182,7 @@ CSSFontVariantEmojiEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "PLATFORM(GTK) || PLATFORM(WPE)": true
+      "PLATFORM(GTK) || PLATFORM(WPE)": false
       default: false
     WebCore:
       default: false
@@ -1281,7 +1281,6 @@ CSSPaintingAPIEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "ENABLE(EXPERIMENTAL_FEATURES)": true
       default: false
     WebCore:
       default: false
@@ -1380,7 +1379,7 @@ CSSScrollbarColorEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      default: defaultScrollbarColorEnabled()
+      default: false
     WebCore:
       default: false
 
@@ -1521,10 +1520,9 @@ CSSTextTransformMathAutoEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "PLATFORM(GTK) || PLATFORM(WPE)": true
-      default: false
+      default: true
     WebCore:
-      default: false
+      default: true
 
 CSSTextWrapPrettyEnabled:
    type: bool
@@ -1551,9 +1549,9 @@ CSSTransformStyleSeparatedEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      default: false
+      default: true
     WebCore:
-      default: false
+      default: true
 
 CSSTreeCountingFunctionsEnabled:
   type: bool
@@ -1621,11 +1619,9 @@ CSSUnprefixedBackdropFilterEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "ENABLE(UNPREFIXED_BACKDROP_FILTER)": true
-      default: false
+      default: true
     WebCore:
-      "ENABLE(UNPREFIXED_BACKDROP_FILTER)": true
-      default: false
+      default: true
 
 CSSWordBreakAutoPhraseEnabled:
   type: bool
@@ -1666,10 +1662,10 @@ CanvasColorSpaceEnabled:
   humanReadableDescription: "Enable use of predefined canvas color spaces"
   defaultValue:
     WebKitLegacy:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || PLATFORM(WPE)": true
       default: false
     WebKit:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || PLATFORM(WPE)": true
       default: false
     WebCore:
       default: false
@@ -2092,7 +2088,6 @@ CoreMathMLEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
     WebCore:
       default: false
@@ -2275,10 +2270,10 @@ DataListElementEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "(PLATFORM(COCOA) && !PLATFORM(WATCHOS)) || PLATFORM(GTK)": true
+      "(PLATFORM(COCOA) && !PLATFORM(WATCHOS)) || PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
     WebCore:
-      "(PLATFORM(COCOA) && !PLATFORM(WATCHOS)) || PLATFORM(GTK)": true
+      "(PLATFORM(COCOA) && !PLATFORM(WATCHOS)) || PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
   sharedPreferenceForWebProcess: true
 
@@ -2655,13 +2650,10 @@ EnableElementCurrentCSSZoom:
   humanReadableDescription: "Enable Element.currentCSSZoom"
   defaultValue:
     WebKitLegacy:
-      "PLATFORM(COCOA)": true
       default: false
     WebKit:
-      "PLATFORM(COCOA)": true
       default: false
     WebCore:
-      "PLATFORM(COCOA)": true
       default: false
 
 EnableInheritURIQueryComponent:
@@ -2780,13 +2772,10 @@ EvaluationTimeZoomEnabled:
   humanReadableDescription: "Enables used zoom value to be applied during layout and avoid applying at style-build time"
   defaultValue:
     WebKitLegacy:
-      "PLATFORM(COCOA)": true
       default: false
     WebKit:
-      "PLATFORM(COCOA)": true
       default: false
     WebCore:
-      "PLATFORM(COCOA)": true
       default: false
 
 EventHandlerDrivenSmoothKeyboardScrollingEnabled:
@@ -2976,7 +2965,8 @@ FacebookLiveRecordingQuirkEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      default: WebKit::defaultFacebookLiveRecordingQuirkEnabled()
+      PLATFORM(MAC): true
+      default: false
     WebCore:
       default: false
 
@@ -3487,11 +3477,11 @@ HTMLEnhancedSelectParsingEnabled:
    humanReadableDescription: "Enable enhanced HTML select element parsing"
    defaultValue:
      WebKitLegacy:
-       default: true
+       default: false
      WebKit:
-       default: true
+       default: false
      WebCore:
-       default: true
+       default: false
 
 HTMLEnhancedSelectSelectedContentEnabled:
    type: bool
@@ -3760,11 +3750,9 @@ ImageCaptureEnabled:
   condition: ENABLE(MEDIA_STREAM)
   defaultValue:
     WebKit:
-      "PLATFORM(COCOA)": true
-      default: false
+      default: true
     WebCore:
-      "PLATFORM(COCOA)": true
-      default: false
+      default: true
 
 ImageControlsEnabled:
   type: bool
@@ -3920,7 +3908,7 @@ InputTypeColorEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "PLATFORM(COCOA) && !PLATFORM(WATCHOS) || PLATFORM(GTK)": true
+      "PLATFORM(COCOA) && !PLATFORM(WATCHOS) || PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
     WebCore:
       default: false
@@ -3936,11 +3924,9 @@ InputTypeColorEnhancementsEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "PLATFORM(COCOA) && !PLATFORM(WATCHOS)": true
-      default: false
+      default: true
     WebCore:
-      "PLATFORM(COCOA) && !PLATFORM(WATCHOS)": true
-      default: false
+      default: true
   sharedPreferenceForWebProcess: true
 
 InputTypeDateEnabled:
@@ -3953,7 +3939,7 @@ InputTypeDateEnabled:
       "PLATFORM(IOS_FAMILY)": true
       default: false
     WebKit:
-      "PLATFORM(COCOA) || PLATFORM(GTK)": true
+      "PLATFORM(COCOA) || PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
     WebCore:
       default: false
@@ -3969,7 +3955,7 @@ InputTypeDateTimeLocalEnabled:
       "PLATFORM(IOS_FAMILY)": true
       default: false
     WebKit:
-      "PLATFORM(COCOA) || PLATFORM(GTK)": true
+      "PLATFORM(COCOA) || PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
     WebCore:
       default: false
@@ -4001,7 +3987,7 @@ InputTypeTimeEnabled:
       "PLATFORM(IOS_FAMILY)": true
       default: false
     WebKit:
-      "PLATFORM(COCOA) || PLATFORM(GTK)": true
+      "PLATFORM(COCOA) || PLATFORM(GTK) || PLATFORM(WPE)": true
       default: false
     WebCore:
       default: false
@@ -4069,7 +4055,7 @@ InspectorStartsAttached:
   exposed: [ WebKit ]
   defaultValue:
     WebKit:
-      default: true
+      default: false
 
 InspectorSupportsShowingCertificate:
   type: bool
@@ -5230,8 +5216,7 @@ MediaRecorderEnabledWebM:
     WebKitLegacy:
       default: false
     WebKit:
-      "PLATFORM(COCOA)": true
-      default: false
+      default: true
     WebCore:
       default: false
   sharedPreferenceForWebProcess: true
@@ -5246,8 +5231,7 @@ MediaSessionCaptureToggleAPIEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "PLATFORM(COCOA)": true
-      default: false
+      default: true
     WebCore:
       default: false
 
@@ -5348,7 +5332,7 @@ MediaSourcePrefersDecompressionSession:
     WebKitLegacy:
       default: false
     WebKit:
-      default: WebKit::defaultMediaSourcePrefersDecompressionSession()
+      default: false
     WebCore:
       default: true
   sharedPreferenceForWebProcess: true
@@ -5960,7 +5944,7 @@ PDFJSViewerEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "PLATFORM(GTK) || PLATFORM(WPE)": true
+      "PLATFORM(GTK) || PLATFORM(WPE)": false
       default: false
     WebCore:
       default: false
@@ -6241,7 +6225,7 @@ PointerLockEnabled:
       "PLATFORM(IOS_FAMILY)": false
       default: true
     WebCore:
-      default: false
+      default: true
 
 PointerLockOptionsEnabled:
   type: bool
@@ -6268,7 +6252,7 @@ PopoverAttributeEnabled:
     WebKitLegacy:
       default: WebKit::defaultPopoverAttributeEnabled()
     WebKit:
-      default: WebKit::defaultPopoverAttributeEnabled()
+      default: true
     WebCore:
       default: true
 
@@ -6442,7 +6426,7 @@ RTCEncodedStreamsQuirkEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      default: WebKit::defaultRTCEncodedStreamsQuirkEnabled()
+      default: false
     WebCore:
       default: false
 
@@ -6836,10 +6820,10 @@ ScopedCustomElementRegistryEnabled:
       "PLATFORM(COCOA)": true
       default: false
     WebKit:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || PLATFORM(WPE)": true
       default: false
     WebCore:
-      "PLATFORM(COCOA)": true
+      "PLATFORM(COCOA) || PLATFORM(WPE)": true
       default: false
 
 # FIXME: Is this implemented for WebKitLegacy? If not, this should be excluded from WebKitLegacy entirely.
@@ -7954,11 +7938,9 @@ SwitchControlEnabled:
       "PLATFORM(COCOA)": true
       default: false
     WebKit:
-      "PLATFORM(COCOA)": true
-      default: false
+      default: true
     WebCore:
-      "PLATFORM(COCOA)": true
-      default: false
+      default: true
 
 # FIXME: There is no custom binding implemented for WebKitLegacy.
 SystemLayoutDirection:
@@ -8804,11 +8786,9 @@ VerticalFormControlsEnabled:
       "PLATFORM(COCOA)": true
       default: false
     WebKit:
-      "PLATFORM(COCOA)": true
-      default: false
+      default: true
     WebCore:
-      "PLATFORM(COCOA)": true
-      default: false
+      default: true
 
 VideoFullsceenPrefersMostVisibleHeuristic:
   type: bool
@@ -9180,10 +9160,8 @@ WebCodecsAV1Enabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "USE(GSTREAMER)": true
       default: false
     WebCore:
-      "USE(GSTREAMER)": true
       default: false
   disableInLockdownMode: true
 
@@ -9198,9 +9176,9 @@ WebCodecsAudioEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      default: true
+      default: false
     WebCore:
-      default: true
+      default: false
 
 WebCodecsHEVCEnabled:
   type: bool
@@ -9460,10 +9438,8 @@ WebRTCAV1CodecEnabled:
     WebKitLegacy:
       default: false
     WebKit:
-      "USE(GSTREAMER)": true
       default: false
     WebCore:
-      "USE(GSTREAMER)": true
       default: false
 
 WebRTCAudioLatencyAdaptationEnabled:

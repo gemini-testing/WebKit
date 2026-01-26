@@ -235,6 +235,7 @@ private:
         UseViewportCoordinates = 1 << 1,
     };
     void computeElementLayout(const String& elementID, OptionSet<ElementLayoutOption>, Function<void(std::optional<Rect>&&, std::optional<Point>&&, bool, RefPtr<JSON::Object>&&)>&&);
+    void computeElementRect(const String& elementID, Function<void(std::optional<Rect>&&, RefPtr<JSON::Object>&&)>&&);
 
     void elementIsFileUpload(const String& elementID, Function<void(CommandResult&&)>&&);
     enum class FileUploadType { Single,

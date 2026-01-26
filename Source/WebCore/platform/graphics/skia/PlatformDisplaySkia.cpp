@@ -264,6 +264,7 @@ private:
         // FIXME: add GrContextOptions, shader cache, etc.
         GrContextOptions options;
         options.fAllowMSAAOnNewIntel = shouldAllowMSAAOnNewIntel();
+        options.fInternalMultisampleCount = 0; // Testplane make rendering more consistant
         if (auto grContext = GrDirectContexts::MakeGL(skiaGLInterface(), options)) {
             m_skiaGLContext = WTF::move(glContext);
             m_skiaGrContext = WTF::move(grContext);

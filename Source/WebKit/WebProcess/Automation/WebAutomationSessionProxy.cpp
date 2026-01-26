@@ -45,6 +45,7 @@
 #include <JavaScriptCore/OpaqueJSString.h>
 #include <WebCore/AXObjectCache.h>
 #include <WebCore/AccessibilityObject.h>
+#include <WebCore/CheckVisibilityOptions.h>
 #include <WebCore/ContainerNodeInlines.h>
 #include <WebCore/Cookie.h>
 #include <WebCore/CookieJar.h>
@@ -804,9 +805,17 @@ void WebAutomationSessionProxy::computeElementLayout(WebCore::PageIdentifier pag
         // at the calculated IVCP. An element is technically not "in view" if it is not within its own paint/hit test tree,
         // so it cannot have an in-view center point either. And without an IVCP, the definition of 'obscured' makes no sense.
         // See <https://w3c.github.io/webdriver/webdriver-spec.html#dfn-in-view>.
-        String elementNotInteractableErrorType = Inspector::Protocol::AutomationHelpers::getEnumConstantValue(Inspector::Protocol::Automation::ErrorMessage::ElementNotInteractable);
-        completionHandler(elementNotInteractableErrorType, resultElementBounds, resultInViewCenterPoint, isObscured);
-        return;
+
+        // Testplane // in some cases, "index == notFound" even when element is displayed, so we add intrusive visibility check
+        // Testplane // https://bugs.webkit.org/show_bug.cgi?id=303991
+
+        if (index == notFound || coreElement->checkVisibility({true, true, true})) {
+            fprintf(stderr, "Testplane::Webkit::WebAutomationSessionProxy::computeElementLayout: Skip visibility check for %s\n", nodeHandle.utf8().data());
+        } else {
+            String elementNotInteractableErrorType = Inspector::Protocol::AutomationHelpers::getEnumConstantValue(Inspector::Protocol::Automation::ErrorMessage::ElementNotInteractable);
+            completionHandler(elementNotInteractableErrorType, resultElementBounds, resultInViewCenterPoint, isObscured);
+            return;
+        }
     }
 
     // Check the case where a non-descendant element hit tests before the target element. For example, a child <option>
@@ -826,6 +835,51 @@ void WebAutomationSessionProxy::computeElementLayout(WebCore::PageIdentifier pag
     }
 
     completionHandler(std::nullopt, resultElementBounds, resultInViewCenterPoint, isObscured);
+}
+
+void WebAutomationSessionProxy::computeElementRect(WebCore::PageIdentifier pageID, std::optional<WebCore::FrameIdentifier> frameID, String nodeHandle, CompletionHandler<void(std::optional<String>, WebCore::FloatRect)>&& completionHandler)
+{
+    RefPtr page = WebProcess::singleton().webPage(pageID);
+    if (!page) {
+        String windowNotFoundErrorType = Inspector::Protocol::AutomationHelpers::getEnumConstantValue(Inspector::Protocol::Automation::ErrorMessage::WindowNotFound);
+        completionHandler(windowNotFoundErrorType, { });
+        return;
+    }
+
+    RefPtr frame = frameID ? WebProcess::singleton().webFrame(*frameID) : &page->mainWebFrame();
+    RefPtr coreLocalFrame = frame ? frame->coreLocalFrame() : nullptr;
+    RefPtr frameView = coreLocalFrame ? coreLocalFrame->view() : nullptr;
+    if (!frameView) {
+        String frameNotFoundErrorType = Inspector::Protocol::AutomationHelpers::getEnumConstantValue(Inspector::Protocol::Automation::ErrorMessage::FrameNotFound);
+        completionHandler(frameNotFoundErrorType, { });
+        return;
+    }
+
+    if (!isValidNodeHandle(nodeHandle)) {
+        String invalidNodeIdentifierrrorType = Inspector::Protocol::AutomationHelpers::getEnumConstantValue(Inspector::Protocol::Automation::ErrorMessage::InvalidNodeIdentifier);
+        completionHandler(invalidNodeIdentifierrrorType, { });
+        return;
+    }
+
+    RefPtr coreElement = elementForNodeHandle(*frame, nodeHandle);
+    if (!coreElement) {
+        String nodeNotFoundErrorType = Inspector::Protocol::AutomationHelpers::getEnumConstantValue(Inspector::Protocol::Automation::ErrorMessage::NodeNotFound);
+        completionHandler(nodeNotFoundErrorType, { });
+        return;
+    }
+
+    // Testplane: move element rect by viewport:
+    // https://www.w3.org/TR/webdriver1/#dfn-get-element-rect
+    // Step 4: Calculate the absolute position of element and let it be coordinates
+    // Step 6: "x" - The first value of coordinates, "y" - The second value of coordinates
+    // Absolute position: https://www.w3.org/TR/webdriver1/#dfn-calculate-the-absolute-position
+    // Let x be (scrollX of window + rect’s x coordinate).
+    // Let y be (scrollY of window + rect’s y coordinate).
+    WebCore::FloatRect resultElementBounds = coreElement->boundingClientRect();
+
+    resultElementBounds.moveBy(frameView->contentsScrollPosition());
+
+    completionHandler(std::nullopt, resultElementBounds);
 }
 
 void WebAutomationSessionProxy::getComputedRole(WebCore::PageIdentifier pageID, std::optional<WebCore::FrameIdentifier> frameID, String nodeHandle, CompletionHandler<void(std::optional<String>, std::optional<String>)>&& completionHandler)

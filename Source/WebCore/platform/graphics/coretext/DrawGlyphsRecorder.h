@@ -98,7 +98,7 @@ private:
     RetainPtr<CGColorRef> m_initialFillColor;
     RetainPtr<CGColorRef> m_initialStrokeColor;
     const DeriveFontFromContext m_deriveFontFromContext;
-    FontSmoothingMode m_smoothingMode { FontSmoothingMode::Auto };
+    FontSmoothingMode m_smoothingMode { FontSmoothingMode::Antialiased };
 };
 
 } // namespace WebCore

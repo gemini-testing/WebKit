@@ -1205,6 +1205,55 @@ void Session::computeElementLayout(const String& elementID, OptionSet<ElementLay
     });
 }
 
+void Session::computeElementRect(const String& elementID, Function<void(std::optional<Rect>&&, RefPtr<JSON::Object>&&)>&& completionHandler)
+{
+    auto parameters = JSON::Object::create();
+    parameters->setString("browsingContextHandle"_s, uncheckedTopLevelBrowsingContext());
+    parameters->setString("frameHandle"_s, m_currentBrowsingContext.value_or(emptyString()));
+    parameters->setString("nodeHandle"_s, elementID);
+    m_host->sendCommandToBackend("computeElementRect"_s, WTF::move(parameters), [protectedThis = Ref { *this }, completionHandler = WTF::move(completionHandler)](SessionHost::CommandResponse&& response) mutable {
+        if (response.isError || !response.responseObject) {
+            completionHandler(std::nullopt, WTF::move(response.responseObject));
+            return;
+        }
+
+        auto rectObject = response.responseObject->getObject("rect"_s);
+        if (!rectObject) {
+            completionHandler(std::nullopt, nullptr);
+            return;
+        }
+
+        std::optional<int> elementX;
+        std::optional<int> elementY;
+        auto elementPosition = rectObject->getObject("origin"_s);
+        if (elementPosition) {
+            elementX = elementPosition->getInteger("x"_s);
+            elementY = elementPosition->getInteger("y"_s);
+        }
+        if (!elementX || !elementY) {
+            completionHandler(std::nullopt, nullptr);
+            return;
+        }
+
+        std::optional<int> elementWidth;
+        std::optional<int> elementHeight;
+        auto elementSize = rectObject->getObject("size"_s);
+        if (elementSize) {
+            elementWidth = elementSize->getInteger("width"_s);
+            elementHeight = elementSize->getInteger("height"_s);
+        }
+        if (!elementWidth || !elementHeight) {
+            completionHandler(std::nullopt, nullptr);
+            return;
+        }
+
+        Rect rect = { { elementX.value(), elementY.value() }, { elementWidth.value(), elementHeight.value() } };
+
+        completionHandler(rect, nullptr);
+    });
+}
+
+
 void Session::findElements(const String& strategy, const String& selector, FindElementsMode mode, const String& rootElementID, ElementIsShadowRoot isShadowRoot, Function<void(CommandResult&&)>&& completionHandler)
 {
     if (!m_currentBrowsingContext) {
@@ -1543,7 +1592,8 @@ void Session::getElementRect(const String& elementID, Function<void(CommandResul
             completionHandler(WTF::move(result));
             return;
         }
-        computeElementLayout(elementID, { }, [protectedThis, completionHandler = WTF::move(completionHandler)](std::optional<Rect>&& rect, std::optional<Point>&&, bool, RefPtr<JSON::Object>&& error) {
+
+        computeElementRect(elementID, [protectedThis, completionHandler = WTF::move(completionHandler)](std::optional<Rect>&& rect, RefPtr<JSON::Object>&& error) {
             if (!rect || error) {
                 completionHandler(CommandResult::fail(WTF::move(error)));
                 return;

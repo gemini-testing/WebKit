@@ -66,7 +66,7 @@ FontCascadeDescription::FontCascadeDescription()
     , m_isAbsoluteSize(false)
     , m_kerning(enumToUnderlyingType(Kerning::Auto))
     , m_keywordSize(0)
-    , m_fontSmoothing(enumToUnderlyingType(FontSmoothingMode::Auto))
+    , m_fontSmoothing(enumToUnderlyingType(FontSmoothingMode::Antialiased))
     , m_isSpecifiedFont(false)
 {
 }
